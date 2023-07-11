@@ -173,9 +173,7 @@ class NotificationItem extends React.Component {
   }
 
   componentDidMount() {
-    var self = this;
     var transitionEvent = whichTransitionEvent();
-    var notification = this.props.notification;
     var element = ReactDOM.findDOMNode(this);
 
     this._height = element.offsetHeight;
@@ -191,13 +189,21 @@ class NotificationItem extends React.Component {
       }
     }
 
+    this._showNotification();
+  }
+
+
+  componentDidUpdate() {
+    let self = this;
+    let notification = this.props.notification;
     if (notification.autoDismiss) {
+      if (this._notificationTimer) {
+        this._notificationTimer.clear();
+      }
       this._notificationTimer = new Helpers.Timer(function() {
         self._hideNotification();
       }, notification.autoDismiss * 1000);
     }
-
-    this._showNotification();
   }
 
   _handleMouseEnter() {
